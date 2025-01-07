@@ -227,7 +227,7 @@ def rl() :
 
 
 #let's play
-while Winner=="" :
+while 1 :
         #game board
         for i in list :
                 print("".join(i))
@@ -258,7 +258,6 @@ while Winner=="" :
                         y1p = yp
                         x1p = xp
                         nobat +=1
-                        #$win? 
                     else :
                         s2 += 1
                         continue    
@@ -272,7 +271,6 @@ while Winner=="" :
                         y1p = yp
                         x1p = xp
                         nobat +=1
-                        #$win? 
                     else :
                         s2 += 1
                         continue    
@@ -285,8 +283,7 @@ while Winner=="" :
                     if s1 == s2 :
                         y1p = yp
                         x1p = xp
-                        nobat +=1
-                        #win?   
+                        nobat +=1  
                     else :
                          s2 += 1
                          continue
@@ -300,7 +297,6 @@ while Winner=="" :
                         y1p = yp
                         x1p = xp
                         nobat +=1
-                        #win?
                     else :
                          s2 += 1
                          continue
@@ -330,7 +326,6 @@ while Winner=="" :
                         y2p = yp
                         x2p = xp
                         nobat +=1
-                        #$win?
                     else :
                          s2 += 1
                          continue     
@@ -343,8 +338,7 @@ while Winner=="" :
                     if s1 == s2 :
                         y2p = yp
                         x2p = xp
-                        nobat +=1
-                        #$win? 
+                        nobat +=1 
                     else:
                         s2 += 1
                         continue       
@@ -358,7 +352,6 @@ while Winner=="" :
                         y2p = yp
                         x2p = xp
                         nobat +=1
-                        #win?
                     else :
                          s2 += 1
                          continue    
@@ -372,7 +365,6 @@ while Winner=="" :
                         y2p = yp
                         x2p = xp
                         nobat +=1
-                        #win?
                     else:
                          s2 += 1
                          continue
