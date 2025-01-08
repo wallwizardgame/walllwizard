@@ -28,6 +28,8 @@ nobat = 0
 Winner = ""
 s1 = 0
 s2 = 0
+wall1 = 0
+wall2 = 0
 
 
 #wall def
@@ -47,6 +49,7 @@ def wall() :
             yc = int((y+yy)/2)
             if list[yc][xw1]==" *  " and list[yc][xw1-1]==" *  " :
                 print("Wall is not allowed here.")
+                nobat -= 1
             else :
                 list[y][x] = "*"
                 list[yy][x] = "*"
@@ -57,6 +60,7 @@ def wall() :
             xc = x+xx
             if list[y-1][xc]=="*" and list[y+1][xc]=="*":
                 print("Wall is not allowed here.")
+                nobat -= 1
             else :
                 list[y][x] = " *  "
                 list[y][xx] = " *  "
@@ -68,8 +72,8 @@ def ud() :
     global y 
     global yw 
     global ys 
-    global s1               
-    if 0<=y<=16 and list[yw][int((xp/2)+1)]!=" *  " :
+    global s1    
+    if 0<=y<=16 and list[yw][int((xp/2))]!=" *  " :
         if list[y][xp]==f" {pll} " :
             if y == 0 or y == 16 :
                 a = input("Pleas choose between 'r' and 'l':")
@@ -100,7 +104,7 @@ def ud() :
                     s1 += 1
                     return(s1)  
             else :
-                if list[yws][int((x1p/2)+1)]!=" *  " :
+                if list[yws][int((x1p/2))]!=" *  " :
                     list[yp][xp] = "   "
                     list[ys][xp] = f" {pl} "
                     yp = ys
@@ -302,7 +306,13 @@ while 1 :
                          continue
         # wall player 1         
                 elif mw == "wall" :
+                    wallleft = 10-wall1
+                    print(f"you have {wallleft} walls left.")
+                    if wall1 < 10 :
                         wall()
+                        wall1 += 1
+                    else :
+                        print("you are out of walls.")
                 else :
                         print("Pleas choose between 'd' , 'u' , 'r' , 'l' and 'wall'.")
                         
@@ -368,8 +378,14 @@ while 1 :
                     else:
                          s2 += 1
                          continue
-        # wall player 2        
+        # wall player 2 
                 elif mw == "wall" :
-                        wall() 
+                    wallleft = 10-wall2
+                    print(f"you have {wallleft} walls left.")
+                    if wall2 < 10 :
+                        wall()
+                        wall2 += 1
+                    else :
+                        print("you are out of walls.")
                 else :
                         print("Pleas choose between 'd' , 'u' , 'r' , 'l' and 'wall'.")
