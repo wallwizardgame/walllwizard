@@ -36,39 +36,47 @@ wtf = ""
 #wall def
 def wall() :  
         global wtf   
-        yw1 , xw1 = input().split()
-        yw2 , xw2 = input().split()
+        yw1 , xw1 = input("Please enter the row and column of the firs wall :").split()
+        yw2 , xw2 = input("Please enter the row and column of the second wall :").split()
         yw1 = int(yw1)
         xw1 = int(xw1)
         yw2 = int(yw2)
         xw2 = int(xw2)
         wtf = "f"
-        if xw1 == xw2 : #amoody
-            x = (xw1*2)-1
-            y = (yw1-1)*2
-            yy = (yw2-1)*2
-            yc = int((y+yy)/2)
-            if list[yc][xw1]==" *  " and list[yc][xw1-1]==" *  " :
-                print("Wall is not allowed here.")
-            elif list[y][x] == "*" or list[yy][x] == "*" :
-                print("Wall is not allowed here.")
+        if xw1 == xw2 and abs(yw1-yw2) == 1 : #amoody
+            if 0<xw1<9 and 0<xw2<9 and 0<yw1<10 and 0<yw2<10 :
+                x = (xw1*2)-1
+                y = (yw1-1)*2
+                yy = (yw2-1)*2
+                yc = int((y+yy)/2)
+                if list[yc][xw1]==" *  " and list[yc][xw1-1]==" *  " :
+                    print("Wall is not allowed here.")
+                elif list[y][x] == "*" or list[yy][x] == "*" :
+                    print("Wall is not allowed here.")
+                else :
+                    list[y][x] = "*"
+                    list[yy][x] = "*"
+                    wtf = "t"
             else :
-                list[y][x] = "*"
-                list[yy][x] = "*"
-                wtf = "t"
-        else : #ofoghi
-            y = (yw1*2)-1
-            x = xw1-1
-            xx = xw2-1
-            xc = x+xx
-            if list[y-1][xc]=="*" and list[y+1][xc]=="*":
                 print("Wall is not allowed here.")
-            elif list[y][x] == " *  " or list[y][xx] == " *  " :
-                print("Wall is not allowed here.")
+        elif yw1 == yw2 and abs(xw2-xw1) == 1 : #ofoghi
+            if 0<xw1<10 and 0<xw2<10 and 0<yw1<9 and 0<yw2<9 :
+                y = (yw1*2)-1
+                x = xw1-1
+                xx = xw2-1
+                xc = x+xx
+                if list[y-1][xc]=="*" and list[y+1][xc]=="*":
+                    print("Wall is not allowed here.")
+                elif list[y][x] == " *  " or list[y][xx] == " *  " :
+                    print("Wall is not allowed here.")
+                else :
+                    list[y][x] = " *  "
+                    list[y][xx] = " *  "
+                    wtf = "t"
             else :
-                list[y][x] = " *  "
-                list[y][xx] = " *  "
-                wtf = "t"
+                print("Wall is not allowed here.")
+        else :
+            print("Wall is not allowed here.")
 
 #move up , down def
 def ud() :
@@ -250,6 +258,7 @@ while 1 :
         #player 1
         if nobat%2 == 0 :
                 print("Player number 1's turn :")
+                print("Pleas choose between 'd' , 'u' , 'r' , 'l' and 'wall'.")
                 pl = "1"
                 pll = "2"
                 yp = y1p
@@ -326,6 +335,7 @@ while 1 :
         #player 2
         else :
                 print("Player number 2's turn :")
+                print("Pleas choose between 'd' , 'u' , 'r' , 'l' and 'wall'.")
                 pl = "2"
                 pll = "1"
                 yp = y2p
