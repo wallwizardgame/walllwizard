@@ -30,18 +30,19 @@ s1 = 0
 s2 = 0
 wall1 = 0
 wall2 = 0
+wtf = ""
 
 
 #wall def
-def wall() : 
-        global nobat     
+def wall() :  
+        global wtf   
         yw1 , xw1 = input().split()
         yw2 , xw2 = input().split()
         yw1 = int(yw1)
         xw1 = int(xw1)
         yw2 = int(yw2)
         xw2 = int(xw2)
-        nobat += 1
+        wtf = "f"
         if xw1 == xw2 : #amoody
             x = (xw1*2)-1
             y = (yw1-1)*2
@@ -49,10 +50,12 @@ def wall() :
             yc = int((y+yy)/2)
             if list[yc][xw1]==" *  " and list[yc][xw1-1]==" *  " :
                 print("Wall is not allowed here.")
-                nobat -= 1
+            elif list[y][x] == "*" or list[yy][x] == "*" :
+                print("Wall is not allowed here.")
             else :
                 list[y][x] = "*"
                 list[yy][x] = "*"
+                wtf = "t"
         else : #ofoghi
             y = (yw1*2)-1
             x = xw1-1
@@ -60,10 +63,12 @@ def wall() :
             xc = x+xx
             if list[y-1][xc]=="*" and list[y+1][xc]=="*":
                 print("Wall is not allowed here.")
-                nobat -= 1
+            elif list[y][x] == " *  " or list[y][xx] == " *  " :
+                print("Wall is not allowed here.")
             else :
                 list[y][x] = " *  "
                 list[y][xx] = " *  "
+                wtf = "t"
 
 #move up , down def
 def ud() :
@@ -310,7 +315,9 @@ while 1 :
                     print(f"you have {wallleft} walls left.")
                     if wall1 < 10 :
                         wall()
-                        wall1 += 1
+                        if wtf == "t" :
+                            wall1 += 1
+                            nobat += 1
                     else :
                         print("you are out of walls.")
                 else :
@@ -384,7 +391,9 @@ while 1 :
                     print(f"you have {wallleft} walls left.")
                     if wall2 < 10 :
                         wall()
-                        wall2 += 1
+                        if wtf == "t" :
+                            wall2 += 1
+                            nobat += 1
                     else :
                         print("you are out of walls.")
                 else :
