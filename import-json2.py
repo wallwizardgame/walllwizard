@@ -3,10 +3,30 @@ import re
 import uuid
 import quoridor2
 import bcrypt
+import saving
 from colorama import Fore, Style
 
 USERS_FILE = "users.json"
 GAMES_FILE = "games.json"
+
+DEFAULT_BOARD = [["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "] 
+            , [" -  "," -  "," -  "," -  "," -  "," -  "," -  "," -  "," - "] 
+            , ["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "] 
+            , [" -  "," -  "," -  "," -  "," -  "," -  "," -  "," -  "," - "] 
+            , ["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "] 
+            , [" -  "," -  "," -  "," -  "," -  "," -  "," -  "," -  "," - "] 
+            , ["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "] 
+            , [" -  "," -  "," -  "," -  "," -  "," -  "," -  "," -  "," - "] 
+            , ["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "] 
+            , [" -  "," -  "," -  "," -  "," -  "," -  "," -  "," -  "," - "] 
+            , ["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "] 
+            , [" -  "," -  "," -  "," -  "," -  "," -  "," -  "," -  "," - "] 
+            , ["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "] 
+            , [" -  "," -  "," -  "," -  "," -  "," -  "," -  "," -  "," - "] 
+            , ["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "] 
+            , [" -  "," -  "," -  "," -  "," -  "," -  "," -  "," -  "," - "] 
+            , ["   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   ","|","   "]]
+
 
 def load_users():
     try:
@@ -101,7 +121,7 @@ def start_new_game(users, games, current_user):
         print(Fore.RED + "Opponent's username not found." + Style.RESET_ALL)
         return
 
-    password = input(f"Enter {opponent}'s password: ").strip()
+    password = input(f"Enter {opponent["name"]}'s password: ").strip()
     hashed_password = users[opponent]["password"].encode('utf-8')
 
     if not bcrypt.checkpw(password.encode('utf-8'), hashed_password):
@@ -110,20 +130,36 @@ def start_new_game(users, games, current_user):
 
     game_id = str(uuid.uuid4())
     games[game_id] = {
-        "players": [current_user, opponent],
-        "state": "new"
+        "players": [{"name": current_user,
+                     "x": 8, 
+                     "y": 0, 
+                      "walls": 10
+                      },
+                    {"name": opponent,
+                     "x": 8, 
+                     "y": 16, 
+                      "walls": 10
+                      }],
+        "state": "new", 
+        "board": DEFAULT_BOARD,
+        "turn": 0,
+        "result": "unfinished"
     }
     save_games(games)
     print(Fore.GREEN + f"New game started! Game ID: {game_id}" + Style.RESET_ALL)
-    quoridor2.playing()
-
+    game = games[game_id]
+    print(game)
+    input()
+    save_games(games)
+    quoridor2.playing(game_id, game["players"], None, game['turn'])
 
 
 def continue_game(games, current_user):
     """ """
     print(Fore.CYAN + "\n=== Continue a Game ===" + Style.RESET_ALL)
-    user_games = {gid: g for gid, g in games.items() if current_user in g["players"] and g["state"] != "finished"}
-
+    print(games)
+    user_games = {gid: g for gid, g in games.items() if current_user in [x["name"] for x in g["players"]] and g["state"] != "finished"}
+    
     if not user_games:
         print(Fore.RED + "No unfinished games found." + Style.RESET_ALL)
         return
@@ -138,7 +174,7 @@ def continue_game(games, current_user):
         return
 
     opponent = [p for p in user_games[game_id]["players"] if p != current_user][0]
-    password = input(f"Enter {opponent}'s password: ").strip()
+    password = input(f"Enter {opponent["name"]}'s password: ").strip()
     hashed_password = load_users()[opponent]["password"].encode('utf-8')
 
     if not bcrypt.checkpw(password.encode('utf-8'), hashed_password):
@@ -146,7 +182,9 @@ def continue_game(games, current_user):
         return
 
     print(Fore.GREEN + f"Continuing game {game_id}..." + Style.RESET_ALL)
-    quoridor2.playing()
+    game = saving.load_game(game_id)
+    print(game)
+    quoridor2.playing(game_id, game["players"], game["board"], game['turn'])
 
 def view_game_history(games, current_user):
     """ """
@@ -185,7 +223,7 @@ def main():
     games = load_games()
 
     current_user = None
-    while True:
+    while True: 
         if not current_user:
             print(Fore.CYAN + "\n=== Main Menu ===" + Style.RESET_ALL)
             print(Fore.YELLOW + "1. Sign Up" + Style.RESET_ALL)
@@ -227,3 +265,83 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+import json #??
+
+def save_game_data(game_data, file_path):
+    """bsort json file save mishe ."""
+    try:
+        with open(file_path, 'r') as file:
+            games = json.load(file)
+    except FileNotFoundError:
+        games = []
+
+    games.append(game_data)
+
+    with open(file_path, 'w') as file:
+        json.dump(games, file, indent=4)
+
+def record_game():
+    """sbt etelaat new game."""
+    game_data = {
+        "game_id": input("Enter game ID: "),
+        "player1": input("Enter Player 1 Name: "),
+        "player2": input("Enter Player 2 Name: "),
+        "player1_position": input("Enter Player 1 Position: "),
+        "player2_position": input("Enter Player 2 Position: "),
+        "wall_positions": input("Enter Wall Positions (e.g., [(x1, y1), (x2, y2)]): "),
+        "current_turn": input("Whose turn is it (Player 1/Player 2)?: "),
+        "time_spent": int(input("Enter total time spent (in minutes): ")),
+        "result": input("Enter result (e.g., Player 1 wins): ")
+    }
+
+    save_game_data(game_data, "games_data.json")
+    print("Game data saved successfully!")
+
+# estfade az tabe
+if name == "main":
+    record_game()
+
+save_game_data
+
+def save_game_data(game_data, file_path):
+    """Save game data to a JSON file."""
+
+    try:
+        with open(file_path, 'r') as file:
+            games = json.load(file)
+    except FileNotFoundError:
+        games = []
+
+
+    games.append(game_data)
+
+
+    with open(file_path, 'w') as file:
+        json.dump(games, file, indent=4)
+
+
+def record_game():
+    """Record a new game's data."""
+
+
+
+    game_data = {
+        "game_id": input("Enter game ID: "),
+        "player1": input("Enter Player 1 Name: "),
+        "player2": input("Enter Player 2 Name: "),
+        "player1_position": input("Enter Player 1 Position: "),
+        "player2_position": input("Enter Player 2 Position: "),
+        "wall_positions": input("Enter Wall Positions (e.g., [(x1, y1), (x2, y2)]): "),
+        "current_turn": input("Whose turn is it (Player 1/Player 2)?: "),
+        "time_spent": int(input("Enter total time spent (in minutes): ")),
+        "result": input("Enter result (e.g., Player 1 wins): ")
+    }
+
+
+    save_game_data(game_data, "games_data.json")
+    print("Game data saved successfully!")
+
+
+if name == "main":
+    record_game()
